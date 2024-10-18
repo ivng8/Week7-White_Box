@@ -1,5 +1,5 @@
 
-import { NumericKeys } from '../enums';
+import { NumericKeys, OperatorKeys } from '../enums';
 import { ICalculatorState, IContext, IStateData } from '../interfaces';
 import { CalculatorModel } from '../models/calculator.model';
 import { StateData } from '../models/state-data.model';
@@ -81,7 +81,27 @@ describe('states', (): void => {
     });
 
     describe('binaryOperator()', (): void => {
-      it.todo('should do something');
+      it('should collapse 6 / 2 + back into second state', (): void => {
+        (<any>enteringSecondNumberState)._data._firstBuffer = '6';
+        (<any>enteringSecondNumberState)._data.firstOperator = OperatorKeys.DIV;
+        (<any>enteringSecondNumberState)._data._secondBuffer = '2';;
+        enteringSecondNumberState.binaryOperator(OperatorKeys.PLUS);
+
+        expect((<any>enteringSecondNumberState)._data._secondBuffer).toEqual('');
+        expect((<any>enteringSecondNumberState)._data._firstBuffer).toEqual('3');
+        expect((<any>enteringSecondNumberState)._data._firstOperator).toEqual(OperatorKeys.PLUS);
+      });
+
+      it('should collapse 4 * 2 + back into second state', (): void => {
+        (<any>enteringSecondNumberState)._data._firstBuffer = '4';
+        (<any>enteringSecondNumberState)._data.firstOperator = OperatorKeys.MULT;
+        (<any>enteringSecondNumberState)._data._secondBuffer = '2';;
+        enteringSecondNumberState.binaryOperator(OperatorKeys.PLUS);
+
+        expect((<any>enteringSecondNumberState)._data._secondBuffer).toEqual('');
+        expect((<any>enteringSecondNumberState)._data._firstBuffer).toEqual('8');
+        expect((<any>enteringSecondNumberState)._data._firstOperator).toEqual(OperatorKeys.PLUS);
+      });
     });
 
     describe('equals()', (): void => {
